@@ -1,14 +1,9 @@
 import {CategoryModel} from "../../DB/Models/Category.model.js";
+import expressAsyncHandler from "express-async-handler";
 import slugify from "slugify";
 
-export async function postCategoryController(req, res){
+export let postCategoryController = expressAsyncHandler(async (req, res) => {
     let name = req.body.name;
-
-    CategoryModel.create({name, slug:slugify(name)})
-        .then((category) => {
-            res.status(201).send({"data":category})
-        })
-        .catch(err => {
-            res.status(400).send(err);
-        });
-}
+    const category = await CategoryModel.create({name, slug:slugify(name)});
+    res.status(201).send({"data":category})
+});
