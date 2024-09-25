@@ -1,20 +1,14 @@
 import {CategoryModel} from "../../DB/Models/Category.model.js";
+import slugify from "slugify";
 
 export async function postCategoryController(req, res){
     let name = req.body.name;
 
-    if(!name){
-        res.status(400).send({"msg":"name is required"});
-    }
-
-    const category = new CategoryModel({ name });
-
-    category.save()
-        .then((doc) => {
-            res.status(200).send(doc);
+    CategoryModel.create({name, slug:slugify(name)})
+        .then((category) => {
+            res.status(201).send({"data":category})
         })
-        .catch((err) => {
-            console.error("Error saving category:", err);
-            res.status(500).send({ "msg": "Internal Server Error", "error": err.message });
+        .catch(err => {
+            res.status(400).send(err);
         });
 }
