@@ -1,14 +1,15 @@
-import Express from "express";
+/* eslint-disable no-undef */
 import dotenv from "dotenv";
+import Express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
 
-dotenv.config({"path":"config.env"});
+dotenv.config({ "path": "config.env" });
 
-import {dbConnetion} from "./DB/db_connection.js";
-import {ApiError} from "./SRC/Utillis/apiErrors.js";
-import globalErrorHanddle from "./SRC/Middlewares/globalErrorHanddle.js"
-import {router as apiRouter} from "./SRC/Routers/index.router.js";
+import { dbConnetion } from "./DB/db_connection.js";
+import globalErrorHandle from "./SRC/Middlewares/globalErrorHanddle.middleware.js";
+import { router as apiRouter } from "./SRC/Routers/index.router.js";
+import { ApiError } from "./SRC/Utillis/apiErrors.js";
 
 dbConnetion();
 
@@ -17,7 +18,7 @@ const app = Express();
 // middlewares
 app.use(Express.json());
 
-if(process.env.ENV_MODE === "development"){
+if (process.env.ENV_MODE === "development") {
     app.use(morgan("dev"));
     mongoose.set('debug', true);
 }
@@ -31,13 +32,23 @@ app.use("*", (req, res, next) => {
 });
 
 
-// express error handdler
-app.use(globalErrorHanddle);
+// express error handler
+app.use(globalErrorHandle);
 
 
 // run app
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`App running on port ${PORT}`);
 });
+
+// handle errors outside express
+process.on("unhandledRejection", (err) => {
+    console.log(`${err.name} | ${err.message}`);
+
+    // close the program after finish all requestes
+    server.close(() => {
+        process.exit(1);
+    });
+})

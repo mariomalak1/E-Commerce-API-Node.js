@@ -5,7 +5,4 @@ export const dbConnetion = () => {
     .then((conn)=>{
         console.log(`database is connected successfully ${conn.connection.host}`);
     })
-    .catch((err)=>{
-        console.error(err);
-    });
 }

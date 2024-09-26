@@ -3,7 +3,6 @@ import slugify from "slugify";
 
 import {CategoryModel} from "../../DB/Models/Category.model.js";
 import {ApiError} from "../Utillis/apiErrors.js";
-import {messageResponse} from "../Utillis/messagesResponse.js";
 
 
 // @desc    Get list of categories
