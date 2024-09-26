@@ -1,8 +1,9 @@
 import expressAsyncHandler from "express-async-handler";
 import slugify from "slugify";
-import mongoose from "mongoose";
 
 import {CategoryModel} from "../../DB/Models/Category.model.js";
+import {ApiError} from "../Utillis/apiErrors.js";
+import {messageResponse} from "../Utillis/messagesResponse.js";
 
 
 // @desc    Get list of categories
@@ -10,7 +11,7 @@ import {CategoryModel} from "../../DB/Models/Category.model.js";
 // @access  private
 export const getCategoryController = expressAsyncHandler(async (req, res) => {
     let page = req.query.page * 1 || 1;
-    let limit = req.query.limit * 1 || 1;
+    let limit = req.query.limit * 1 || 10;
 
     let skip = (page - 1) * limit;
     const numberOfCategories = await CategoryModel.countDocuments();
@@ -32,7 +33,7 @@ export const getCategoryController = expressAsyncHandler(async (req, res) => {
 // @desc    Create category
 // @route   POST api/v1/categories
 // @access  private
-export const postCategoryController = expressAsyncHandler(async (req, res) => {
+export const postCategoryController = expressAsyncHandler(async (req, res, next) => {
     let name = req.body.name;
     const category = await CategoryModel.create({name, slug:slugify(name)});
     res.status(201).send({"data":category})
@@ -41,46 +42,54 @@ export const postCategoryController = expressAsyncHandler(async (req, res) => {
 // @desc    Get specific category by id
 // @route   GET api/v1/categories/{id}
 // @access  public
-export const getCategoryByIdController = expressAsyncHandler(async (req, res) =>{
+export const getCategoryByIdController = expressAsyncHandler(async (req, res, next) =>{
     const {id} = req.params;
-    
-    // check if the id is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send({ "msg": "Invalid category ID" });
-    }
 
     let category = await CategoryModel.findById(id);
 
     if(!category){
-        res.status(404).send({"msg": "category not found"});
+        return next(new ApiError(`category not found with id: ${id}`, 404));
     }
+
     res.status(200).send({data:category});
 });
 
 // @ desc   Update specific category
 // @route   PUT api/v1/categories/{id}
 // @access  private
-export const updateSpecificCategory = expressAsyncHandler(async (req, res) => {
+export const updateSpecificCategoryController = expressAsyncHandler(async (req, res) => {
     const {id} = req.params;
     const {name} = req.body;
     
     if(!name){
-        res.status(400).send({"msg": "name is required"});
+        return next(new ApiError("name is required", 400));
+        // res.status(400).send({"msg": ""});
     }
-
-    // check if the id is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send({ "msg": "Invalid category ID" });
-    }
-
     const category = await CategoryModel.findOneAndUpdate(
         {_id: id}, 
         {name, slug: slugify(name)},
         {returnOriginal: false}
     );
-    console.log(category);
+
     if(!category){
-        res.status(404).send({"msg":"not found category"});
+        return next(new ApiError(`category not found with id: ${id}`, 404));
     }
+
     res.status(200).send({data: category});
+});
+
+
+// @desc    DELETE specific category with id
+// @route   DELTE api/v1/categories/{id}
+// @access  private
+export const deleteCategoryController = expressAsyncHandler(async (req, res) => {
+    const {id} = req.params;
+
+    const category = await CategoryModel.findByIdAndDelete(id);
+    
+    if(!category){
+        return next(new ApiError(`category not found with id: ${id}`, 404));
+    }
+
+    res.status(204).send();
 });
