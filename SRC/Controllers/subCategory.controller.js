@@ -73,7 +73,7 @@ export const getSubCategoryByIdController = expressAsyncHandler(
 // @route   PUT api/v1/subCategories/{id}
 // @access  private
 export const updateSpecificSubCategoryController = expressAsyncHandler(
-    async (req, res) => {
+    async (req, res, next) => {
         const { id } = req.params;
         const { name, category } = req.body;
 
@@ -97,7 +97,7 @@ export const updateSpecificSubCategoryController = expressAsyncHandler(
 // @route   DELTE api/v1/subCategories/{id}
 // @access  private
 export const deleteSubCategoryController = expressAsyncHandler(
-    async (req, res) => {
+    async (req, res, next) => {
         const { id } = req.params;
 
         const subCategory = await SubCategoryModel.findByIdAndDelete(id);

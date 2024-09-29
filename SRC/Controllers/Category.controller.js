@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import expressAsyncHandler from "express-async-handler";
 import slugify from "slugify";
 

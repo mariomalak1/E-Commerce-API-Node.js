@@ -4,7 +4,7 @@ import Express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
 
-dotenv.config({ "path": "config.env" });
+dotenv.config({ path: "config.env" });
 
 import { dbConnetion } from "./DB/db_connection.js";
 import globalErrorHandle from "./SRC/Middlewares/globalErrorHanddle.middleware.js";
@@ -20,7 +20,7 @@ app.use(Express.json());
 
 if (process.env.ENV_MODE === "development") {
     app.use(morgan("dev"));
-    mongoose.set('debug', true);
+    mongoose.set("debug", true);
 }
 
 // mount routes
@@ -31,10 +31,8 @@ app.use("*", (req, res, next) => {
     next(new ApiError("invalid route", 404));
 });
 
-
 // express error handler
 app.use(globalErrorHandle);
-
 
 // run app
 const PORT = process.env.PORT || 8000;
@@ -51,4 +49,4 @@ process.on("unhandledRejection", (err) => {
     server.close(() => {
         process.exit(1);
     });
-})
+});
