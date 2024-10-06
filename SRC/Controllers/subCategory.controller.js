@@ -20,7 +20,9 @@ export const getSubCategoryController = expressAsyncHandler(
         }
         const subCategories = await SubCategoryModel.find()
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            // make new query to database to make populate
+            .populate({path: "category", select: "name createdAt -_id"});
 
         res.status(200).send({
             meta: {
