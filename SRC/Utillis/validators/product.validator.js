@@ -1,4 +1,4 @@
-import { param, body, check, ExpressValidator } from "express-validator";
+import { param, check} from "express-validator";
 
 import validator from "../../Middlewares/valdator.middleware.js";
 
@@ -20,11 +20,18 @@ export const postProductValidator = [
         .notEmpty()
         .withMessage("must provide main cover image for product"),
 
-    check("price").notEmpty().withMessage("price is required").isNumeric().withMessage("price must be a number")
-    .toFloat(),
+    check("price")
+        .notEmpty()
+        .withMessage("price is required")
+        .isNumeric()
+        .withMessage("price must be a number")
+        .toFloat(),
 
-    check("quantity").notEmpty().withMessage("quantity is required")
-    .isNumeric().withMessage("quantity must be a number"),
+    check("quantity")
+        .notEmpty()
+        .withMessage("quantity is required")
+        .isNumeric()
+        .withMessage("quantity must be a number"),
 
     check("description")
         .notEmpty()
@@ -55,9 +62,12 @@ export const postProductValidator = [
         .optional()
         .isNumeric()
         .withMessage("discount must be a number")
-        .toFloat().custom((value, {req}) => {
-            if(value >= req.body.price){
-                throw new Error("priceAfterDiscount must less than the real price")
+        .toFloat()
+        .custom((value, { req }) => {
+            if (value >= req.body.price) {
+                throw new Error(
+                    "priceAfterDiscount must less than the real price"
+                );
             }
             return true;
         }),
