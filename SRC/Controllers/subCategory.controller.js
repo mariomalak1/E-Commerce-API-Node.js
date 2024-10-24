@@ -18,7 +18,14 @@ export const getSubCategoryController = expressAsyncHandler(
             page = 1;
             skip = 0;
         }
-        const subCategories = await SubCategoryModel.find()
+
+        let filterObject = {};
+        // if categoryId passed will return all subCategories of this category id
+        if(req.params.categoryId){
+            filterObject.category = req.params.categoryId;
+        }
+
+        const subCategories = await SubCategoryModel.find(filterObject)
             .skip(skip)
             .limit(limit)
             // make new query to database to make populate

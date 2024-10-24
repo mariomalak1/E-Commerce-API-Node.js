@@ -8,7 +8,11 @@ import {getCategoryController, postCategoryController,
      getCategoryByIdController, updateSpecificCategoryController,
      deleteCategoryController} from "../Controllers/Category.controller.js";
 
+import { getSubCategoryController } from "../Controllers/subCategory.controller.js";
+
 export const router = Router();
+
+router.use("/:categoryId/subCategories/", getSubCategoryController)
 
 router.route("/")
 .get(getCategoryController)

@@ -15,7 +15,7 @@ import {
     deleteSubCategoryController,
 } from "../Controllers/subCategory.controller.js";
 
-export const router = Router();
+export const router = Router({mergeParams: true});
 
 router
     .route("/")

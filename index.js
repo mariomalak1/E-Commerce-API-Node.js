@@ -26,7 +26,7 @@ if (process.env.ENV_MODE === "development") {
 // mount routes
 app.use("/api/v1", apiRouter);
 
-// handdle invalid routers
+// handle invalid routers
 app.use("*", (req, res, next) => {
     next(new ApiError("invalid route", 404));
 });
@@ -45,7 +45,7 @@ const server = app.listen(PORT, () => {
 process.on("unhandledRejection", (err) => {
     console.log(`${err.name} | ${err.message}`);
 
-    // close the program after finish all requestes
+    // close the program after finish all requests
     server.close(() => {
         process.exit(1);
     });
