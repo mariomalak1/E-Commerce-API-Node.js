@@ -79,12 +79,13 @@ export const postProductValidator = [
 
     check("ratingAverage")
         .optional()
-        .toFloat()
+        .isNumeric()
         .withMessage("ratingAverage must be decimal number")
         .isLength({ min: 1 })
         .withMessage("rating must be atleast 1")
         .isLength({ max: 5 })
-        .withMessage("rating must be atmost 5"),
+        .withMessage("rating must be atmost 5")
+        .toFloat(),
 
     check("ratingCount")
         .optional()
