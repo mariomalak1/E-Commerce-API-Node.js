@@ -25,14 +25,14 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: [true, "description is required"],
         minLength: [5, "description length is too short"],
-        maxLength: [512, "description length is too long"],
+        maxLength: [2000, "description length is too long"],
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
         required: [true, "category is required"],
     },
-    subCategories: [{
+    subCategory: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "SubCategory",
         minLength: [1, "atleast one subCategories is required"],
@@ -64,7 +64,7 @@ const ProductSchema = new mongoose.Schema({
         default: 1,
         min: [0, "quantity must be more than 1"],
     },
-    color: {
+    colors: {
         type: [String],
     }
 }, { timestamps: true });
