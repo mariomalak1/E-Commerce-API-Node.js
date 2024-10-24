@@ -8,11 +8,9 @@ import {getBrandController, postBrandController,
      getBrandByIdController, updateSpecificBrandController,
      deleteBrandController} from "../Controllers/Brand.controller.js";
 
-import { getSubBrandController } from "../Controllers/subBrand.controller.js";
-
 export const router = Router();
 
-router.use("/:brandId/subBrands/", getSubBrandController)
+router.use("/:brandId/subBrands/", getBrandController)
 
 router.route("/")
 .get(getBrandController)

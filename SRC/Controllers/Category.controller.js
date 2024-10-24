@@ -90,7 +90,7 @@ export const updateSpecificCategoryController = expressAsyncHandler(
 // @route   DELTE api/v1/categories/{id}
 // @access  private
 export const deleteCategoryController = expressAsyncHandler(
-    async (req, res) => {
+    async (req, res, next) => {
         const { id } = req.params;
 
         const category = await CategoryModel.findByIdAndDelete(id);

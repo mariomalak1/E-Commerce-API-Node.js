@@ -9,7 +9,7 @@ export const getBrandValidator = [
 
 export const postBrandValidator = [
     body('name').notEmpty().withMessage("name is required")
-        .isLength({ min: 3 }).withMessage("too short brand name")
+        .isLength({ min: 2 }).withMessage("too short brand name")
         .isLength({ max: 32 }).withMessage("too long brand name"),
     validator
 ];

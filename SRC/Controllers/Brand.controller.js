@@ -90,7 +90,7 @@ export const updateSpecificBrandController = expressAsyncHandler(
 // @route   DELTE api/v1/brands/{id}
 // @access  private
 export const deleteBrandController = expressAsyncHandler(
-    async (req, res) => {
+    async (req, res, next) => {
         const { id } = req.params;
 
         const brands = await BrandModel.findByIdAndDelete(id);
