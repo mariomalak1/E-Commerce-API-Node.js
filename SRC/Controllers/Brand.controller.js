@@ -21,6 +21,7 @@ export const getBrandController = expressAsyncHandler(async (req, res) => {
     const brands = await BrandModel.find().skip(skip).limit(limit);
     res.status(200).send({
         meta: {
+            total: numberOfBrands,
             results: brands.length,
             currentPage: page,
             limit: limit,

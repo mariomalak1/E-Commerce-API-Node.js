@@ -18,9 +18,15 @@ export const getProductsController = expressAsyncHandler(async (req, res) => {
         page = 1;
         skip = 0;
     }
-    const products = await ProductModel.find().skip(skip).limit(limit);
+    const products = await ProductModel.find()
+        .skip(skip)
+        .limit(limit).sort({ createdAt: -1 })
+        .populate({path: "category", select: "name -_id"})
+        .populate({path: "subCategory", select: "name -_id"});
+
     res.status(200).send({
         meta: {
+            total: numberOfProducts,
             results: products.length,
             currentPage: page,
             limit: limit,
@@ -32,13 +38,22 @@ export const getProductsController = expressAsyncHandler(async (req, res) => {
 // @desc    Create product
 // @route   POST api/v1/products
 // @access  private
-export const postProductController = expressAsyncHandler(
-    async (req, res) => {
-        req.body.slug = slugify(req.body.title);
-        const product = await ProductModel.create(req.body);
-        res.status(201).send({ data: product });
+export const postProductController = expressAsyncHandler(async (req, res) => {
+    req.body.slug = slugify(req.body.title);
+
+    // remove duplicates from subCategory array
+    if(req.body.subCategory){
+        req.body.subCategory = Array.of(...(new Set(req.body.subCategory)));
     }
-);
+
+    // make priceAfterDiscount default to price if not provided
+    if (!req.body.priceAfterDiscount) {
+        req.body.priceAfterDiscount = req.body.price;
+    }
+
+    const product = await ProductModel.create(req.body);
+    res.status(201).send({ data: product });
+});
 
 // @desc    Get specific product by id
 // @route   GET api/v1/products/{id}
@@ -47,7 +62,8 @@ export const getProductByIdController = expressAsyncHandler(
     async (req, res, next) => {
         const { id } = req.params;
 
-        let product = await ProductModel.findById(id);
+        let product = await ProductModel.findById(id)
+        .populate({path: "category", select: "name -_id"});
 
         if (!product) {
             return next(new ApiError(`product not found with id: ${id}`, 404));
@@ -62,9 +78,11 @@ export const getProductByIdController = expressAsyncHandler(
 // @access  private
 export const updateSpecificProductController = expressAsyncHandler(
     async (req, res) => {
-        req.body.slug = slugify(req.body.title);
-
         const { id } = req.params;
+
+        if(req.body.title){
+            req.body.slug = slugify(req.body.title);
+        }
 
         const product = await ProductModel.findOneAndUpdate(
             { _id: id },

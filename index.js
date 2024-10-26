@@ -6,12 +6,12 @@ import morgan from "morgan";
 
 dotenv.config({ path: "config.env" });
 
-import { dbConnetion } from "./DB/db_connection.js";
+import { dbConnection } from "./DB/db_connection.js";
 import globalErrorHandle from "./SRC/Middlewares/globalErrorHanddle.middleware.js";
 import { router as apiRouter } from "./SRC/Routers/index.router.js";
 import { ApiError } from "./SRC/Utillis/apiErrors.js";
 
-dbConnetion();
+dbConnection();
 
 const app = Express();
 

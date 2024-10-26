@@ -2,6 +2,9 @@ import { param, check} from "express-validator";
 
 import validator from "../../Middlewares/valdator.middleware.js";
 
+import {CategoryModel} from "../../../DB/Models/Category.model.js";
+import SubCategoryModel from "../../../DB/Models/SubCategory.model.js";
+
 export const getProductValidator = [
     param("id").isMongoId().withMessage("invalid mongo id format"),
     validator,
@@ -42,7 +45,13 @@ export const postProductValidator = [
         .notEmpty()
         .withMessage("product must have category")
         .isMongoId()
-        .withMessage("invalid mongo id for category"),
+        .withMessage("invalid mongo id for category")
+        .custom(async value => {
+            const category = await CategoryModel.findById(value);
+            if (!category) {
+              throw new Error('no category with this id');
+            }
+          }),
 
     check("brand")
         .optional()
@@ -52,7 +61,22 @@ export const postProductValidator = [
     check("subCategory")
         .optional()
         .isMongoId()
-        .withMessage("invalid mongo id for subCategory"),
+        .withMessage("invalid mongo id for subCategory")
+        .custom(async (value, {req})=>{
+            const subCategory = await SubCategoryModel.findById(value);
+            
+            if(!subCategory){
+                throw new Error("no subcategory with this id");
+            }
+
+            // check if subcategory is in the same category as the product
+            else{
+                if(subCategory.category.toString() !== req.body.category){
+                    throw new Error("must provide subcategory for this category");
+                }
+            }
+            return true;
+        }),
 
     check("colors").optional().isArray().withMessage("colors must be in array"),
 
@@ -92,7 +116,6 @@ export const postProductValidator = [
         .toInt()
         .isLength({ min: 0 })
         .withMessage("ratingCount minimum number is 0"),
-
     validator,
 ];
 

@@ -21,6 +21,7 @@ export const getCategoryController = expressAsyncHandler(async (req, res) => {
     const categories = await CategoryModel.find().skip(skip).limit(limit);
     res.status(200).send({
         meta: {
+            total: numberOfCategories,
             results: categories.length,
             currentPage: page,
             limit: limit,

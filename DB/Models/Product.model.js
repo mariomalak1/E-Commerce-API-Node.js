@@ -57,7 +57,6 @@ const ProductSchema = new mongoose.Schema({
     },
     priceAfterDiscount: {
         type: Number,
-        default: 0,
     },
     quantity: {
         type: Number,

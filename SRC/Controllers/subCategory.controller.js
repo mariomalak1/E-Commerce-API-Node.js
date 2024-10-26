@@ -33,6 +33,7 @@ export const getSubCategoryController = expressAsyncHandler(
 
         res.status(200).send({
             meta: {
+                total: numberOfSubCategories,            
                 results: subCategories.length,
                 currentPage: page,
                 limit: limit,
