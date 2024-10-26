@@ -94,7 +94,7 @@ const saveAllDataOfProductsAndDelete = async () => {
 }
 
 const main = async () => {
-  await destroyData();
+  await saveAllDataOfProductsAndDelete();
   await putCategoryFromDBInProducts();
   await putSubCategoriesAndBrandInProducts();
   await insertProducts();
